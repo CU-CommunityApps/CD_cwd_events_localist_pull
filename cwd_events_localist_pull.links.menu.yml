@@ -1,6 +1,6 @@
-cwd_events_localist_pull.cwd_events_localist_pull.collection:
+localist_pull.localist_pull.collection:
   title: 'Localist Events Pull'
-  route_name: cwd_events_localist_pull.cwd_events_localist_pull.collection
+  route_name: localist_pull.localist_pull.collection
   description: 'Configure Localist Pull entities'
   parent: system.admin_config_services
   weight: 99

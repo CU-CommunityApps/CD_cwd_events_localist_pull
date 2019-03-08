@@ -1,5 +1,5 @@
 <?php
-namespace Drupal\localist_pull\Controller;
+namespace Drupal\cwd_events_localist_pull\Controller;
 
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;

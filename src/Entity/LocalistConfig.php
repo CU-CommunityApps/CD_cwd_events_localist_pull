@@ -1,8 +1,8 @@
 <?php
-namespace Drupal\localist_pull\Entity;
+namespace Drupal\cwd_events_localist_pull\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
-use Drupal\localist_pull\LocalistInterface;
+use Drupal\cwd_events_localist_pull\LocalistInterface;
 
 /**
  * Defines the LocalistPull entity.
@@ -11,14 +11,14 @@ use Drupal\localist_pull\LocalistInterface;
  *   id = "localist_pull",
  *   label = @Translation("LocalistConfig"),
  *   handlers = {
- *     "list_builder" = "Drupal\localist_pull\Controller\LocalistListBuilder",
+ *     "list_builder" = "Drupal\cwd_events_localist_pull\Controller\LocalistListBuilder",
  *     "form" = {
- *       "add" = "Drupal\localist_pull\Form\LocalistEntityForm",
- *       "edit" = "Drupal\localist_pull\Form\LocalistEntityForm",
- *       "delete" = "Drupal\localist_pull\Form\LocalistDeleteForm",
+ *       "add" = "Drupal\cwd_events_localist_pull\Form\LocalistEntityForm",
+ *       "edit" = "Drupal\cwd_events_localist_pull\Form\LocalistEntityForm",
+ *       "delete" = "Drupal\cwd_events_localist_pull\Form\LocalistDeleteForm",
  *     }
  *   },
- *   config_prefix = "localist_pull",
+ *   config_prefix = "cwd_events_localist_pull",
  *   admin_permission = "administer site configuration",
  *   entity_keys = {
  *     "id" = "id",

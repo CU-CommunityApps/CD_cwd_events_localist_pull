@@ -1,5 +1,5 @@
 <?php
-namespace Drupal\localist_pull\Form;
+namespace Drupal\cwd_events_localist_pull\Form;
 
 use Drupal\Core\Entity\EntityConfirmFormBase;
 use Drupal\Core\Url;

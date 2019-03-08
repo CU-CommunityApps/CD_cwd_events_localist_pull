@@ -1,5 +1,5 @@
 <?php
-namespace Drupal\localist_pull;
+namespace Drupal\cwd_events_localist_pull;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Component\Serialization\Json;
 use \Drupal\node\Entity\Node;

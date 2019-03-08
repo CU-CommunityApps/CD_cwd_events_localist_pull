@@ -1,5 +1,5 @@
 <?php
-namespace Drupal\localist_pull;
+namespace Drupal\cwd_events_localist_pull;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 

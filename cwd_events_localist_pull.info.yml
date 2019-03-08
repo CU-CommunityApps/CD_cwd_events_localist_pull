@@ -1,0 +1,5 @@
+name: "Localist Events Pull"
+type: module
+description: "Custom module to import events from localist (CU Calendar, Weill Calendar, etc.) into nodes of a specified content type."
+core: 8.x
+package: Custom

@@ -1,0 +1,5 @@
+entity.cwd_events_localist_pull.add_form:
+  route_name: 'entity.cwd_events_localist_pull.add_form'
+  title: 'Add cwd_events_localist_pull entity'
+  appears_on:
+    - cwd_events_localist_pull.cwd_events_localist_pull.collection

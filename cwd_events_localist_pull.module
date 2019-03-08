@@ -1,0 +1,258 @@
+<?php
+
+/**
+ * @file
+ * Contains cwd_events_localist_pull.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Component\Serialization\Json;
+use \Drupal\node\Entity\Node;
+use Drupal\file\Entity\File;
+use Drupal\cwd_events_localist_pull\LocalistProcessor;
+
+/**
+ * Implements hook_help().
+ */
+function cwd_events_localist_pull_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the cwd_events_localist_pull module.
+    case 'help.page.cwd_events_localist_pull':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Custom module to import events from localist (CU Calendar, Weill Calendar, etc.) into nodes of a specified content type.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+function cwd_events_localist_pull_cron() {
+    $query = \Drupal::service('entity.query')->get('cwd_events_localist_pull');
+    $entity_ids = $query->execute();
+    $config_storage = \Drupal::entityManager()->getStorage('cwd_events_localist_pull');
+    $configs = $config_storage->loadMultiple($entity_ids);
+    foreach ($configs as $config) {
+      $processor = new LocalistProcessor($config);
+      $url = $processor->create_localist_url();
+      \Drupal::logger('cwd_events_localist_pull')->notice($url);
+      $processor->process_url_pull($config->get('localist_id_field_name'),$url);
+    }
+
+}
+// function cwd_events_localist_pull_cron() {
+//
+//   $config = \Drupal::config('cwd_events_localist_pull.localistconfiguration');
+//
+//   if(!is_null($config->get('localist_url')) && $config->get('localist_url') != '') {
+//     $url = _create_localist_url($config);
+//     _process_url_pull($config->get('localist_id_field_name'),$config,$url);
+//     \Drupal::logger('cwd_events_localist_pull')->notice($url);
+//   }
+//   if(!is_null($config->get('localist_wmc_url')) && $config->get('localist_wmc_url') != '') {
+//     $url = _create_wmc_localist_url($config);
+//     _process_url_pull($config->get('localist_wmc_id_field_name'),$config,$url);
+//     \Drupal::logger('cwd_events_localist_pull')->notice($url);
+//   }
+// }
+
+// function _get_node_by_localist_id($field_search_name,$id) {
+//   $query = \Drupal::entityQuery('node')->condition($field_search_name, $id);
+//   $nids = $query->execute();
+//   return $nids;
+// }
+//
+// function _convert_localist_date($date_string) {
+//   $cut_date_string = substr($date_string,0,-6);
+//   $dateTime = \DateTime::createFromFormat('Y-m-d\TH:i:s',date("Y-m-d\TH:i:s",strtotime($cut_date_string)));
+//   $sign = substr($date_string,-6,1);
+//   $offset_sign = "+";
+//   if($sign == "+") {
+//     $offset_sign = "-";
+//   }
+//   $offset_hours = ltrim(substr($date_string,-5,2), '0');
+//   $offset = $offset_sign.$offset_hours." hours";
+//   $dateTime = $dateTime->modify($offset);
+//   $newdate = $dateTime->format('Y-m-d\TH:i:s');
+//   return $newdate;
+// }
+//
+// function _create_node_create_array($config) {
+//   $node_create_array = [];
+//   if(!empty($config->get('localist_id_field_name')) && $config->get('localist_id_field_name') != '') {
+//     $node_create_array[$config->get('localist_id_field_name')] = '';
+//   }
+//   if(!empty($config->get('localist_url_field_name')) && $config->get('localist_url_field_name') != '') {
+//     $node_create_array[$config->get('localist_url_field_name')] = '';
+//   }
+//   if(!empty($config->get('localist_location_field_name')) && $config->get('localist_location_field_name') != '') {
+//     $node_create_array[$config->get('localist_location_field_name')] = '';
+//   }
+//   if(!empty($config->get('localist_date_field_name')) && $config->get('localist_date_field_name') != '') {
+//     $node_create_array[$config->get('localist_date_field_name')] = '';
+//   }
+//   if(!empty($config->get('localist_description_field_name')) && $config->get('localist_description_field_name') != '') {
+//     $node_create_array[$config->get('localist_description_field_name')] = '';
+//   }
+//   if(!empty($config->get('localist_image_field_name')) && $config->get('localist_image_field_name') != '') {
+//     $node_create_array[$config->get('localist_image_field_name')] = '';
+//   }
+//   return $node_create_array;
+// }
+//
+// function _get_localist_event_data($config,$event,$node_array) {
+//   $new_array = [];
+//   foreach ($node_array as $fieldname => $value) {
+//     switch ($fieldname) {
+//       case $config->get('localist_id_field_name'):
+//           $new_array[$config->get('localist_id_field_name')]=$event['event']['id'];
+//       case $config->get('localist_date_field_name'):
+//         if(!is_null($event['event']['event_instances']['0']['event_instance']['start'])) {
+//           $new_array[$config->get('localist_date_field_name')]=_convert_localist_date($event['event']['event_instances']['0']['event_instance']['start']);
+//           // \Drupal::logger('cwd_events_localist_pull')->notice($event['event']['title']." START: ".$event['event']['event_instances']['0']['event_instance']['start']." Returned: ".$new_array[$config->get('localist_date_field_name')]);
+//         }
+//       case $config->get('localist_end_date_field_name'):
+//           if(!is_null($event['event']['event_instances']['0']['event_instance']['end'])) {
+//             $new_array[$config->get('localist_end_date_field_name')]=_convert_localist_date($event['event']['event_instances']['0']['event_instance']['end']);
+//             // \Drupal::logger('cwd_events_localist_pull')->notice($event['event']['title']." END: ".$event['event']['event_instances']['0']['event_instance']['end']." Returned: ".$new_array[$config->get('localist_end_date_field_name')]);
+//           }
+//       case $config->get('localist_description_field_name'):
+//         $new_array[$config->get('localist_description_field_name')]=$event['event']['description_text'];
+//       case $config->get('localist_location_field_name'):
+//           if(!empty($event['event']['location_name']) && !is_null($event['event']['location_name']) && !empty($event['event']['room_number']) && !is_null($event['event']['room_number']))
+//             $new_array[$config->get('localist_location_field_name')]=$event['event']['location_name'].", ".$event['event']['room_number'];
+//           else
+//             $new_array[$config->get('localist_location_field_name')]=$event['event']['location_name'];
+//       case $config->get('localist_url_field_name'):
+//           $new_array[$config->get('localist_url_field_name')]=$event['event']['localist_url'];
+//       case $config->get('localist_image_field_name'):
+//         if(!empty($event['event']['photo_url']) && $event['event']['photo_url'] != '') {
+//           $new_array[$config->get('localist_image_field_name')]=_create_file_and_array($event['event']['photo_url']);
+//         }
+//       default:
+//         break;
+//     }
+//   }
+//   $new_array['title']=$event['event']['title'];
+//   $new_array['type']=$config->get('event_machine_name');
+//   unset($new_array['']);
+//   return $new_array;
+// }
+//
+//
+// function _create_file_and_array($url) {
+//   $temp = explode('/',$url);
+//   $photo_name = array_pop($temp);
+//   $data = file_get_contents($url);
+//   $path = 'public://localist';
+//   file_prepare_directory($path, FILE_CREATE_DIRECTORY);
+//   $file = file_save_data($data, 'public://localist/'.$photo_name, FILE_EXISTS_REPLACE);
+//   $photo_array = [
+//     'target_id' => $file->id(),
+//     'alt' => '',
+//   ];
+//   return $photo_array;
+// }
+//
+// function _create_localist_url($config){
+//   $uri = $config->get('localist_url');
+//   $keys = str_replace(' ','+',implode('&keyword[]=',explode(',',$config->get('localist_keywords'))));
+//   if(!is_null($keys) && $keys != '') {
+//       $keys = "&keyword[]=".$keys;
+//   }
+//   $depts = str_replace(' ','+',implode('&type[]=',explode(',',$config->get('localist_departments'))));
+//   if(!is_null($depts) && $depts != '') {
+//       $depts = "&type[]=".$depts;
+//   }
+//   $date = $config->get('localist_date');
+//   if(is_null($date) || $date == '') {
+//       $date = date('Y-m-d');
+//   }
+//   $count = $config->get('localist_count');
+//   if(is_null($count) || $count == '') {
+//       $count = '5';
+//   }
+//   $url = $uri.'&days=370&sort=date'.$keys.$depts.'&pp='.$count.'&start='.$date;
+//   return $url;
+// }
+//
+// function _create_wmc_localist_url($config){
+//   $uri = $config->get('localist_wmc_url');
+//   $keys = str_replace(' ','+',implode('&keyword[]=',explode(',',$config->get('localist_wmc_keywords'))));
+//   if(!is_null($keys) && $keys != '') {
+//       $keys = "&keyword[]=".$keys;
+//   }
+//   $depts = str_replace(' ','+',implode('&type[]=',explode(',',$config->get('localist_wmc_departments'))));
+//   if(!is_null($depts) && $depts != '') {
+//       $depts = "&type[]=".$depts;
+//   }
+//   $date = $config->get('localist_date');
+//   if(is_null($date) || $date == '') {
+//       $date = date('Y-m-d');
+//   }
+//   $count = $config->get('localist_count');
+//   if(is_null($count) || $count == '') {
+//       $count = '5';
+//   }
+//   $url = $uri.'&days=370&sort=date'.$keys.$depts.'&pp='.$count.'&start='.$date;
+//   return $url;
+// }
+//
+// function _process_url_pull($search_field_name,$config,$url) {
+//   try {
+//     $response = \Drupal::httpClient()->get($url, array('headers' => array('Accept' => 'text/plain')));
+//     $json = (string) $response->getBody();
+//     if (empty($json)) {
+//       return FALSE;
+//     } else {
+//       $events = Json::decode($json)['events'];
+//       if(!empty($events)) {
+//         $count = 0;
+//         foreach ($events as $event) {
+//           $localist_data_array = _get_localist_event_data($config,$event,_create_node_create_array($config));
+//
+//           $existing_event = _get_node_by_localist_id($search_field_name,$event['event']['id']);
+//
+//           if(empty($existing_event)) {
+//             $node = Node::create(
+//               $localist_data_array
+//             );
+//             $node->save();
+//           } else {
+//             $temp = array_reverse($existing_event);
+//             $existing_node_id = array_pop($temp);
+//             $node = \Drupal\node\Entity\Node::load($existing_node_id);
+//             foreach ($localist_data_array as $key => $value) {
+//               if($key != 'type') {
+//                 $node->set($key,$value);
+//               }
+//             }
+//             $node->save();
+//           }
+//         }
+//       }
+//     }
+//   }
+//   catch (RequestException $e) {
+//     \Drupal::logger('cwd_events_localist_pull')->notice("exception");
+//     return FALSE;
+//   }
+// }
+
+
+// function cwd_events_localist_pull_entity_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
+//   if($entity->bundle() == "page") {
+//     $query = \Drupal::service('entity.query')->get('cwd_events_localist_pull');
+//     $entity_ids = $query->execute();
+//     $config_storage = \Drupal::entityManager()->getStorage('cwd_events_localist_pull');
+//     $configs = $config_storage->loadMultiple($entity_ids);
+//     foreach ($configs as $config) {
+//       kint($config);
+//       $processor = new LocalistProcessor($config);
+//       kint($processor);
+//       // $url = $processor.create_localist_url($config);
+//       // $processor.process_url_pull($config->get('localist_id_field_name'),$config,$url);
+//       // \Drupal::logger('cwd_events_localist_pull')->notice($url);  // code...
+//     }
+//   }
+// }

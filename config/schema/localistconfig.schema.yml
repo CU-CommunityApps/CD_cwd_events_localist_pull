@@ -1,4 +1,4 @@
-localist_pull.localist_pull.*:
+cwd_events_localist_pull.localist_pull.*:
   type: config_entity
   label: 'localist_pull entity config'
   mapping:
@@ -52,4 +52,4 @@ localist_pull.localist_pull.*:
       label: 'Should we update existing events'
     publish_events_bool:
       type: boolean
-      label: 'Should we update publish all fed in events'
+      label: 'Should we update publish all imported events'

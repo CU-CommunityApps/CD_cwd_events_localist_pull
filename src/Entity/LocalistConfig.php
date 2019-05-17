@@ -18,7 +18,7 @@ use Drupal\cwd_events_localist_pull\LocalistInterface;
  *       "delete" = "Drupal\cwd_events_localist_pull\Form\LocalistDeleteForm",
  *     }
  *   },
- *   config_prefix = "cwd_events_localist_pull",
+ *   config_prefix = "localist_pull",
  *   admin_permission = "administer site configuration",
  *   entity_keys = {
  *     "id" = "id",

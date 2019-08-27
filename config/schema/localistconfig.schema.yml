@@ -13,43 +13,52 @@ cwd_events_localist_pull.localist_pull.*:
       label: 'URL'
     localist_departments:
       type: string
-      label: 'URL'
+      label: 'Departments'
     localist_keywords:
       type: string
-      label: 'URL'
+      label: 'Keywords'
     localist_count:
       type: string
-      label: 'URL'
+      label: 'Event Count'
     localist_date:
       type: string
-      label: 'URL'
+      label: 'Date'
     event_machine_name:
       type: string
-      label: 'URL'
+      label: 'Event Machine Name'
     localist_id_field_name:
       type: string
-      label: 'URL'
+      label: 'Localist event ID'
     localist_url_field_name:
       type: string
-      label: 'URL'
+      label: 'Localist event URL'
     localist_location_field_name:
       type: string
-      label: 'URL'
+      label: 'Localist event location'
     localist_date_field_name:
       type: string
-      label: 'URL'
+      label: 'Localist event date'
     localist_end_date_field_name:
       type: string
-      label: 'URL'
+      label: 'Localist event end date'
     localist_description_field_name:
       type: string
-      label: 'URL'
+      label: 'Localist event description'
     localist_image_field_name:
       type: string
-      label: 'URL'
+      label: 'Localist event image'
+    localist_tag_field_name:
+      type: string
+      label: 'Localist event department tags'
+    localist_department_taxonomy:
+      type: string
+      label: 'Department Taxonomy'
     update_events_bool:
       type: boolean
       label: 'Should we update existing events'
     publish_events_bool:
       type: boolean
       label: 'Should we update publish all imported events'
+    pull_specified_departments:
+      type: boolean
+      label: 'Should we pull only the specified departments as tags'

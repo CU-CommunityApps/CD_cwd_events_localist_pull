@@ -36,6 +36,7 @@ class LocalistProcessor {
     return $newdate;
   }
 
+
   public function _create_node_create_array() {
     $node_create_array = [];
     if(!empty($this->config->get('localist_id_field_name')) && $this->config->get('localist_id_field_name') != '') {
@@ -56,39 +57,70 @@ class LocalistProcessor {
     if(!empty($this->config->get('localist_image_field_name')) && $this->config->get('localist_image_field_name') != '') {
       $node_create_array[$this->config->get('localist_image_field_name')] = '';
     }
+    if(!empty($this->config->get('localist_tag_field_name')) && $this->config->get('localist_tag_field_name') != '') {
+      $node_create_array[$this->config->get('localist_tag_field_name')] = '';
+    }
     return $node_create_array;
   }
+
 
   public function _get_localist_event_data($event,$node_array) {
     $new_array = [];
     foreach ($node_array as $fieldname => $value) {
       switch ($fieldname) {
         case $this->config->get('localist_id_field_name'):
-            $conf_id = $this->config->id;
-            $new_array[$this->config->get('localist_id_field_name')]=$conf_id.$event['event']['id'];
+          $conf_id = $this->config->id;
+          $new_array[$this->config->get('localist_id_field_name')]=$conf_id.$event['event']['id'];
+          break;
         case $this->config->get('localist_date_field_name'):
           if(!is_null($event['event']['event_instances']['0']['event_instance']['start'])) {
             $new_array[$this->config->get('localist_date_field_name')]=$this->_convert_localist_date($event['event']['event_instances']['0']['event_instance']['start']);
             // \Drupal::logger('localist_pull')->notice($event['event']['title']." START: ".$event['event']['event_instances']['0']['event_instance']['start']." Returned: ".$new_array[$config->get('localist_date_field_name')]);
           }
+          break;
         case $this->config->get('localist_end_date_field_name'):
-            if(!is_null($event['event']['event_instances']['0']['event_instance']['end'])) {
-              $new_array[$this->config->get('localist_end_date_field_name')]=$this->_convert_localist_date($event['event']['event_instances']['0']['event_instance']['end']);
-              // \Drupal::logger('localist_pull')->notice($event['event']['title']." END: ".$event['event']['event_instances']['0']['event_instance']['end']." Returned: ".$new_array[$config->get('localist_end_date_field_name')]);
-            }
+          if(!is_null($event['event']['event_instances']['0']['event_instance']['end'])) {
+            $new_array[$this->config->get('localist_end_date_field_name')]=$this->_convert_localist_date($event['event']['event_instances']['0']['event_instance']['end']);
+            // \Drupal::logger('localist_pull')->notice($event['event']['title']." END: ".$event['event']['event_instances']['0']['event_instance']['end']." Returned: ".$new_array[$config->get('localist_end_date_field_name')]);
+          }
+          break;
         case $this->config->get('localist_description_field_name'):
           $new_array[$this->config->get('localist_description_field_name')]=$event['event']['description_text'];
+          break;
         case $this->config->get('localist_location_field_name'):
-            if(!empty($event['event']['location_name']) && !is_null($event['event']['location_name']) && !empty($event['event']['room_number']) && !is_null($event['event']['room_number']))
-              $new_array[$this->config->get('localist_location_field_name')]=$event['event']['location_name'].", ".$event['event']['room_number'];
-            else
-              $new_array[$this->config->get('localist_location_field_name')]=$event['event']['location_name'];
+          if(!empty($event['event']['location_name']) && !is_null($event['event']['location_name']) && !empty($event['event']['room_number']) && !is_null($event['event']['room_number']))
+            $new_array[$this->config->get('localist_location_field_name')]=$event['event']['location_name'].", ".$event['event']['room_number'];
+          else
+            $new_array[$this->config->get('localist_location_field_name')]=$event['event']['location_name'];
+          break;
         case $this->config->get('localist_url_field_name'):
-            $new_array[$this->config->get('localist_url_field_name')]=$event['event']['localist_url'];
+          $new_array[$this->config->get('localist_url_field_name')]=$event['event']['localist_url'];
+          break;
         case $this->config->get('localist_image_field_name'):
           if(!empty($event['event']['photo_url']) && $event['event']['photo_url'] != '') {
             $new_array[$this->config->get('localist_image_field_name')]=$this->_create_file_and_array($event['event']['photo_url']);
           }
+          break;
+        case $this->config->get('localist_tag_field_name'):
+          if(!empty($event['event']['filters']['departments']) && $event['event']['filters']['departments'] != '') {
+            $department_term_array = array();
+            if($this->config->get('pull_specified_departments') == true) {
+              $valid_department_array = explode(",",$this->config->get('localist_departments'));
+              foreach ($event['event']['filters']['departments'] as $department_info) {
+                if(in_array($department_info['id'],$valid_department_array)) {
+                  $temp_array = array('target_id'=>$this->_find_or_create_department($department_info['name']));
+                  array_push($department_term_array,$temp_array);
+                }
+              }
+            } else {
+              foreach ($event['event']['filters']['departments'] as $department_info) {
+                $temp_array = array('target_id'=>$this->_find_or_create_department($department_info['name']));
+                array_push($department_term_array,$temp_array);
+              }
+            }
+            $new_array[$this->config->get('localist_tag_field_name')] = $department_term_array;
+          }
+          break;
         default:
           break;
       }
@@ -114,6 +146,25 @@ class LocalistProcessor {
     return $photo_array;
   }
 
+
+  function _find_or_create_department($department_name) {
+    $tax_vid = $this->config->get('localist_department_taxonomy');
+    $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $department_name,'vid' => $tax_vid]);
+    if(empty($term)) {
+      $new_term = \Drupal\taxonomy\Entity\Term::create([
+        'vid' => $tax_vid,
+        'name' => $department_name,
+      ]);
+      $new_term->enforceIsNew();
+      $new_term->save();
+    } else {
+      return array_shift($term)->id();
+    }
+    $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $department_name,'vid' => $tax_vid]);
+    return array_shift($term)->id();
+  }
+
+
   public function create_localist_url(){
     $uri = $this->config->get('url');
     $keys = str_replace(' ','+',implode('&keyword[]=',explode(',',$this->config->get('localist_keywords'))));
@@ -136,6 +187,7 @@ class LocalistProcessor {
     return $url;
   }
 
+
   public function process_url_pull($search_field_name,$url) {
     try {
       $response = \Drupal::httpClient()->get($url, array('headers' => array('Accept' => 'text/plain')));
@@ -148,9 +200,7 @@ class LocalistProcessor {
           $count = 0;
           foreach ($events as $event) {
             $localist_data_array = $this->_get_localist_event_data($event,$this->_create_node_create_array());
-
             $existing_event = $this->_get_node_by_localist_id($search_field_name,$event['event']['id']);
-
             if(empty($existing_event)) {
               $node = Node::create(
                 $localist_data_array

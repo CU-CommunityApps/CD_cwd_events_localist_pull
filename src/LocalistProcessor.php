@@ -8,20 +8,20 @@ use Drupal\file\Entity\File;
  * Provides an interface defining an localist_pull entity entity.
  */
 class LocalistProcessor {
-  public $config;
+  private $config;
 
   public function __construct($provided_config) {
     $this->config = $provided_config;
   }
 
-  public function _get_node_by_localist_id($field_search_name,$id) {
+  private function get_node_by_localist_id($field_search_name, $id) {
     $conf_id = $this->config->id;
     $query = \Drupal::entityQuery('node')->condition($field_search_name, $conf_id.$id);
     $nids = $query->execute();
     return $nids;
   }
 
-  public function _convert_localist_date($date_string) {
+  private function convert_localist_date($date_string) {
     $cut_date_string = substr($date_string,0,-6);
     $dateTime = \DateTime::createFromFormat('Y-m-d\TH:i:s',date("Y-m-d\TH:i:s",strtotime($cut_date_string)));
     $sign = substr($date_string,-6,1);
@@ -36,8 +36,7 @@ class LocalistProcessor {
     return $newdate;
   }
 
-
-  public function _create_node_create_array() {
+  private function create_node_create_array() {
     $node_create_array = [];
     if(!empty($this->config->get('localist_id_field_name')) && $this->config->get('localist_id_field_name') != '') {
       $node_create_array[$this->config->get('localist_id_field_name')] = '';
@@ -63,8 +62,7 @@ class LocalistProcessor {
     return $node_create_array;
   }
 
-
-  public function _get_localist_event_data($event,$node_array) {
+  private function get_localist_event_data($event, $node_array) {
     $new_array = [];
     foreach ($node_array as $fieldname => $value) {
       switch ($fieldname) {
@@ -74,13 +72,13 @@ class LocalistProcessor {
           break;
         case $this->config->get('localist_date_field_name'):
           if(!is_null($event['event']['event_instances']['0']['event_instance']['start'])) {
-            $new_array[$this->config->get('localist_date_field_name')]=$this->_convert_localist_date($event['event']['event_instances']['0']['event_instance']['start']);
+            $new_array[$this->config->get('localist_date_field_name')]=$this->convert_localist_date($event['event']['event_instances']['0']['event_instance']['start']);
             // \Drupal::logger('localist_pull')->notice($event['event']['title']." START: ".$event['event']['event_instances']['0']['event_instance']['start']." Returned: ".$new_array[$config->get('localist_date_field_name')]);
           }
           break;
         case $this->config->get('localist_end_date_field_name'):
           if(!is_null($event['event']['event_instances']['0']['event_instance']['end'])) {
-            $new_array[$this->config->get('localist_end_date_field_name')]=$this->_convert_localist_date($event['event']['event_instances']['0']['event_instance']['end']);
+            $new_array[$this->config->get('localist_end_date_field_name')]=$this->convert_localist_date($event['event']['event_instances']['0']['event_instance']['end']);
             // \Drupal::logger('localist_pull')->notice($event['event']['title']." END: ".$event['event']['event_instances']['0']['event_instance']['end']." Returned: ".$new_array[$config->get('localist_end_date_field_name')]);
           }
           break;
@@ -98,7 +96,7 @@ class LocalistProcessor {
           break;
         case $this->config->get('localist_image_field_name'):
           if(!empty($event['event']['photo_url']) && $event['event']['photo_url'] != '') {
-            $new_array[$this->config->get('localist_image_field_name')]=$this->_create_file_and_array($event['event']['photo_url']);
+            $new_array[$this->config->get('localist_image_field_name')]=$this->create_file_and_array($event['event']['photo_url']);
           }
           break;
         case $this->config->get('localist_tag_field_name'):
@@ -132,7 +130,7 @@ class LocalistProcessor {
   }
 
 
-  public function _create_file_and_array($url) {
+  private function create_file_and_array($url) {
     $temp = explode('/',$url);
     $photo_name = array_pop($temp);
     $data = file_get_contents($url);
@@ -199,8 +197,8 @@ class LocalistProcessor {
         if(!empty($events)) {
           $count = 0;
           foreach ($events as $event) {
-            $localist_data_array = $this->_get_localist_event_data($event,$this->_create_node_create_array());
-            $existing_event = $this->_get_node_by_localist_id($search_field_name,$event['event']['id']);
+            $localist_data_array = $this->get_localist_event_data($event,$this->_create_node_create_array());
+            $existing_event = $this->get_node_by_localist_id($search_field_name,$event['event']['id']);
             if(empty($existing_event)) {
               $node = Node::create(
                 $localist_data_array

@@ -147,10 +147,8 @@ class LocalistProcessor {
       ]);
       $new_term->enforceIsNew();
       $new_term->save();
-    } else {
-      return array_shift($term)->id();
+      $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $department_name,'vid' => $tax_vid]);
     }
-    $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $department_name,'vid' => $tax_vid]);
     return array_shift($term)->id();
   }
 

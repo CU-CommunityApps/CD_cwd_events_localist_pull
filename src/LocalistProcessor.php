@@ -187,7 +187,7 @@ class LocalistProcessor {
         if(!empty($events)) {
           $count = 0;
           foreach ($events as $event) {
-            $localist_data_array = $this->get_localist_event_data($event,$this->_create_node_create_array());
+            $localist_data_array = $this->get_localist_event_data($event,$this->create_node_create_array());
             $existing_event = $this->get_node_by_localist_id($search_field_name,$event['event']['id']);
             if(empty($existing_event)) {
               $node = Node::create(

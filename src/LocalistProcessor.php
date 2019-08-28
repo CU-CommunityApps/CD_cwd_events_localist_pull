@@ -101,25 +101,17 @@ class LocalistProcessor {
           break;
         case $this->config->get('localist_tag_field_name'):
           if(!empty($event['event']['filters']['departments']) && $event['event']['filters']['departments'] != '') {
+            $pull_specified_departments = $this->config->get('pull_specified_departments');
+            $valid_department_array = explode(",",$this->config->get('localist_departments'));
             $department_term_array = array();
-            if($this->config->get('pull_specified_departments') == true) {
-              $valid_department_array = explode(",",$this->config->get('localist_departments'));
-              foreach ($event['event']['filters']['departments'] as $department_info) {
-                if(in_array($department_info['id'],$valid_department_array)) {
-                  $temp_array = array('target_id'=>$this->find_or_create_department($department_info['name']));
-                  array_push($department_term_array,$temp_array);
-                }
+            foreach ($event['event']['filters']['departments'] as $department_info) {
+              if($pull_specified_departments && !in_array($department_info['id'],$valid_department_array)) {
+                continue;
               }
-            } else {
-              foreach ($event['event']['filters']['departments'] as $department_info) {
-                $temp_array = array('target_id'=>$this->find_or_create_department($department_info['name']));
-                array_push($department_term_array,$temp_array);
-              }
+              $department_term_array[] = ['target_id' => $this->find_or_create_department($department_info['name'])];
             }
             $new_array[$this->config->get('localist_tag_field_name')] = $department_term_array;
           }
-          break;
-        default:
           break;
       }
     }

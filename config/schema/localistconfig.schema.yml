@@ -19,13 +19,13 @@ cwd_events_localist_pull.localist_pull.*:
       label: 'Keywords'
     localist_count:
       type: string
-      label: 'Event Count'
+      label: 'Event count'
     localist_date:
       type: string
       label: 'Date'
     event_machine_name:
       type: string
-      label: 'Event Machine Name'
+      label: 'Event machine name'
     localist_id_field_name:
       type: string
       label: 'Localist event ID'
@@ -52,7 +52,7 @@ cwd_events_localist_pull.localist_pull.*:
       label: 'Localist event department tags'
     localist_department_taxonomy:
       type: string
-      label: 'Department Taxonomy'
+      label: 'Department taxonomy'
     update_events_bool:
       type: boolean
       label: 'Should we update existing events'

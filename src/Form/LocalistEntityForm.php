@@ -213,7 +213,7 @@ class LocalistEntityForm extends EntityForm {
     ];
     $form['pull_specified_departments'] =[
       '#type' => 'checkbox',
-      '#title' => $this->t('Should we pull only the specified departments as tags? By not checking this box we will pull all departments on and event.'),
+      '#title' => $this->t('Should we pull only the specified departments as tags? By not checking this box we will pull all departments on an event.'),
       '#default_value' => $localist_pull->pull_specified_departments,
     ];
 

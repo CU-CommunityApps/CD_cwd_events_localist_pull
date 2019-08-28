@@ -173,6 +173,34 @@ class LocalistEntityForm extends EntityForm {
       '#description' => $this->t('Mapping: field machine name for the localist image'),
       '#required' => FALSE,
     ];
+    $form['localist_tag_field_name'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Localist (department) tag image field'),
+      '#default_value' => $localist_pull->localist_tag_field_name,
+      '#size' => 20,
+      '#maxlength' => 255,
+      '#description' => $this->t('Mapping: field machine name to add deparments as term refereneces.'),
+      '#required' => FALSE,
+    ];
+    $form['localist_image_field_name'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Localist event image field'),
+      '#default_value' => $localist_pull->localist_image_field_name,
+      '#size' => 20,
+      '#maxlength' => 255,
+      '#description' => $this->t('Mapping: field machine name for the localist image'),
+      '#required' => FALSE,
+    ];
+    $form['localist_department_taxonomy'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Taxonomy for Department Terms machine name'),
+      '#default_value' => $localist_pull->localist_department_taxonomy,
+      '#size' => 20,
+      '#maxlength' => 255,
+      '#description' => $this->t('Machine name of the taxonomy to feed localist departments'),
+      '#required' => FALSE,
+    ];
+
     $form['update_events_bool'] =[
       '#type' => 'checkbox',
       '#title' => $this->t('Update all existing events'),
@@ -183,6 +211,12 @@ class LocalistEntityForm extends EntityForm {
       '#title' => $this->t('Publish all new events'),
       '#default_value' => $localist_pull->publish_events_bool,
     ];
+    $form['pull_specified_departments'] =[
+      '#type' => 'checkbox',
+      '#title' => $this->t('Should we pull only the specified departments as tags? By not checking this box we will pull all departments on an event.'),
+      '#default_value' => $localist_pull->pull_specified_departments,
+    ];
+
     // You will need additional form elements for your custom properties.
     return $form;
   }

@@ -106,13 +106,13 @@ class LocalistProcessor {
               $valid_department_array = explode(",",$this->config->get('localist_departments'));
               foreach ($event['event']['filters']['departments'] as $department_info) {
                 if(in_array($department_info['id'],$valid_department_array)) {
-                  $temp_array = array('target_id'=>$this->_find_or_create_department($department_info['name']));
+                  $temp_array = array('target_id'=>$this->find_or_create_department($department_info['name']));
                   array_push($department_term_array,$temp_array);
                 }
               }
             } else {
               foreach ($event['event']['filters']['departments'] as $department_info) {
-                $temp_array = array('target_id'=>$this->_find_or_create_department($department_info['name']));
+                $temp_array = array('target_id'=>$this->find_or_create_department($department_info['name']));
                 array_push($department_term_array,$temp_array);
               }
             }
@@ -145,7 +145,7 @@ class LocalistProcessor {
   }
 
 
-  function _find_or_create_department($department_name) {
+  private function find_or_create_department($department_name) {
     $tax_vid = $this->config->get('localist_department_taxonomy');
     $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $department_name,'vid' => $tax_vid]);
     if(empty($term)) {

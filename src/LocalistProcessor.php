@@ -17,6 +17,7 @@ class LocalistProcessor {
   private function get_node_by_localist_id($field_search_name, $id) {
     $conf_id = $this->config->id;
     $query = \Drupal::entityQuery('node')->condition($field_search_name, $conf_id.$id);
+    $query->accessCheck(FALSE);
     $nids = $query->execute();
     return $nids;
   }

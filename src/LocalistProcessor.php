@@ -17,7 +17,6 @@ class LocalistProcessor {
   private function get_node_by_localist_id($field_search_name, $id) {
     $conf_id = $this->config->id;
     $query = \Drupal::entityQuery('node')->condition($field_search_name, $conf_id.$id);
-    $query->accessCheck(FALSE);
     $nids = $query->execute();
     return $nids;
   }
@@ -50,6 +49,9 @@ class LocalistProcessor {
     }
     if(!empty($this->config->get('localist_date_field_name')) && $this->config->get('localist_date_field_name') != '') {
       $node_create_array[$this->config->get('localist_date_field_name')] = '';
+    }
+    if(!empty($this->config->get('localist_end_date_field_name')) && $this->config->get('localist_end_date_field_name') != '') {
+      $node_create_array[$this->config->get('localist_end_date_field_name')] = '';
     }
     if(!empty($this->config->get('localist_description_field_name')) && $this->config->get('localist_description_field_name') != '') {
       $node_create_array[$this->config->get('localist_description_field_name')] = '';

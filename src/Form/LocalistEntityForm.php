@@ -91,7 +91,25 @@ class LocalistEntityForm extends EntityForm {
       '#description' => $this->t('Enter the number events from the Cornell Calendar.'),
       '#required' => FALSE,
     ];
-
+    $form['date_label'] = array(
+      '#type' => 'label',
+      '#title' => $this->t('<hr/>Date instrctions:
+        <ul>
+          <li>Relative date  will be used if filled in</li>
+          <li>If relative date is blank this connection will use the static date</li>
+          <li>If there is no static date the default is today</li>
+        </ul>
+        <hr/>'),
+    );
+    $form['localist_relative_date'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Relative Date'),
+      '#default_value' => $localist_pull->localist_relative_date,
+      '#size' => 20,
+      '#maxlength' => 255,
+      '#description' => $this->t('CAUTION: be smart cause we don\'t validate. Enter a relative date will be use like: date(\'Y-m-d\', strtotime("+30 days")); '),
+      '#required' => FALSE,
+    ];
     $form['localist_date'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Date'),
@@ -216,6 +234,20 @@ class LocalistEntityForm extends EntityForm {
       '#title' => $this->t('Should we pull only the specified departments as tags? By not checking this box we will pull all departments on an event.'),
       '#default_value' => $localist_pull->pull_specified_departments,
     ];
+    $form['extra_parameters_type'] = array(
+      '#type' => 'value',
+      '#value' => array('none' => t('None'),
+                        'distinct' => t('Distinct'),
+                        'all' => t('All Instances'))
+    );
+    $form['extra_parameters'] = array(
+      '#title' => t('Extra Localist URL Parameter'),
+      '#type' => 'select',
+      '#description' => '<ul><li>None: adds no parameters to localist query</li><li>Distinct: will return only next instance of an event</li><li>All Instances: returns all instances of an event</li>',
+      '#options' => $form['extra_parameters_type']['#value'],
+      '#default_value' => $localist_pull->extra_parameters,
+      '#required' => TRUE,
+    );
 
     // You will need additional form elements for your custom properties.
     return $form;

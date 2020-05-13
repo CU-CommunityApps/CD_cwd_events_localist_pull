@@ -166,15 +166,34 @@ class LocalistProcessor {
     if(!is_null($depts) && $depts != '') {
         $depts = "&type[]=".$depts;
     }
-    $date = $this->config->get('localist_date');
+
+    //Date for localist url (bad dates)
+    $date = $this->config->get('localist_relative_date');
+    //if relative date is empty use fixed date.
     if(is_null($date) || $date == '') {
-        $date = date('Y-m-d');
+      $date = $this->config->get('localist_date');
+      //if fixed date is empty use today.
+      if(is_null($date) || $date == '') {
+          $date = date('Y-m-d');
+      }
+    } else {
+      //construct relative date
+      $date =  date('Y-m-d', strtotime($date));
     }
+
     $count = $this->config->get('localist_count');
     if(is_null($count) || $count == '') {
         $count = '5';
     }
-    $url = $uri.'&days=370&sort=date'.$keys.$depts.'&pp='.$count.'&start='.$date;
+    $extra_param = $this->config->get('extra_parameters');
+    if($extra_param == "distinct") {
+      $extra_param = "&distinct=true";
+    } elseif($extra_param == "all") {
+      $extra_param = "&all_instances=true";
+    } else {
+      $extra_param = "";
+    }
+    $url = $uri.'&days=370&sort=date'.$keys.$depts.'&pp='.$count.'&start='.$date.$extra_param;
     return $url;
   }
 

@@ -1,0 +1,4 @@
+manage_localist_connection:
+  title: 'Localist Pull: manage localist connections'
+  description: 'This permission allows you to configure and edit localist connection entities.'
+  restrict access: TRUE

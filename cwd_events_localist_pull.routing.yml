@@ -5,7 +5,7 @@ localist_pull.localist_pull.collection:
     _entity_list: 'localist_pull'
     _title: 'Localist Pull entity configuration'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'manage_localist_connection'
 
 entity.localist_pull.add_form:
   path: '/admin/config/system/localist_pull/add'
@@ -13,7 +13,7 @@ entity.localist_pull.add_form:
     _entity_form: 'localist_pull.add'
     _title: 'Add Localist Pull entity'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'manage_localist_connection'
 
 entity.localist_pull.edit_form:
   path: '/admin/config/system/localist_pull/{localist_pull}'
@@ -21,7 +21,7 @@ entity.localist_pull.edit_form:
     _entity_form: 'localist_pull.edit'
     _title: 'Edit Localist Pull entity'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'manage_localist_connection'
 
 entity.localist_pull.delete_form:
   path: '/admin/config/system/localist_pull/{localist_pull}/delete'
@@ -29,4 +29,4 @@ entity.localist_pull.delete_form:
     _entity_form: 'localist_pull.delete'
     _title: 'Delete Localist Pull entity'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'manage_localist_connection'

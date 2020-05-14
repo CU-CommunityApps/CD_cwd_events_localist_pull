@@ -3,6 +3,8 @@ namespace Drupal\cwd_events_localist_pull;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Component\Serialization\Json;
 use \Drupal\node\Entity\Node;
+use Drupal\taxonomy\Entity\Term;
+
 use Drupal\file\Entity\File;
 /**
  * Provides an interface defining an localist_pull entity entity.
@@ -142,12 +144,26 @@ class LocalistProcessor {
 
   private function find_or_create_department($department_name) {
     $tax_vid = $this->config->get('localist_department_taxonomy');
-    $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $department_name,'vid' => $tax_vid]);
-    if(empty($term)) {
-      $new_term = \Drupal\taxonomy\Entity\Term::create([
+    $tax_search_field = $this->config->get('localist_department_lookup_field');
+
+    $term = null;
+    if($tax_search_field != '') {
+      $term_id = $this->getTermByField($tax_search_field,$department_name);
+      if($term_id != false) {
+        return $term_id;
+      } else {
+        $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $department_name,'vid' => $tax_vid]);
+      }
+    }
+
+    if(empty($term) || is_null($term)) {
+      $new_term = Term::create([
         'vid' => $tax_vid,
         'name' => $department_name,
       ]);
+      if($tax_search_field != '') {
+        $new_term->set($tax_search_field,$department_name);
+      }
       $new_term->enforceIsNew();
       $new_term->save();
       $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $department_name,'vid' => $tax_vid]);
@@ -155,6 +171,22 @@ class LocalistProcessor {
     return array_shift($term)->id();
   }
 
+  protected function getTermByField($tax_search_field,$department_name) {
+    $query_string = "select taxonomy_term_field_data.tid";
+    $query_string .= " from taxonomy_term_field_data, taxonomy_term__".$tax_search_field;
+    $query_string .= " where taxonomy_term_field_data.tid = taxonomy_term__".$tax_search_field.".entity_id";
+    $query_string .= " and taxonomy_term__".$tax_search_field.".field_localist_dept_name_value = '".$department_name."'";
+    $query_string .=" limit 1;";
+    $database = \Drupal::database();
+    $query = $database->query($query_string);
+    $results = $query->fetchAll();
+    if(count($results) == 0) {
+      //if no results then send back false
+      return false;
+    } else {
+      return array_shift($results)->tid;
+    }
+  }
 
   public function create_localist_url(){
     $uri = $this->config->get('url');
@@ -223,7 +255,7 @@ class LocalistProcessor {
               if($this->config->update_events_bool) {
                 $temp = array_reverse($existing_event);
                 $existing_node_id = array_pop($temp);
-                $node = \Drupal\node\Entity\Node::load($existing_node_id);
+                $node = Node::load($existing_node_id);
                 foreach ($localist_data_array as $key => $value) {
                   if($key != 'type') {
                     $node->set($key,$value);

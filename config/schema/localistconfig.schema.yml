@@ -56,6 +56,9 @@ cwd_events_localist_pull.localist_pull.*:
     localist_department_taxonomy:
       type: string
       label: 'Department taxonomy'
+    localist_department_lookup_field:
+      type: string
+      label: 'Department lookup field'
     update_events_bool:
       type: boolean
       label: 'Should we update existing events'

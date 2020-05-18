@@ -126,7 +126,7 @@ class LocalistEntityForm extends EntityForm {
       '#default_value' => $localist_pull->localist_relative_date,
       '#size' => 20,
       '#maxlength' => 255,
-      '#description' => $this->t('CAUTION: be smart because we don\'t validate. Enter a relative date. This will be used as: date(\'Y-m-d\', strtotime("+30 days")); '),
+      '#description' => $this->t('Enter a relative date such as "+30 days". This will be used like: date(\'Y-m-d\', strtotime("+30 days")). CAUTION: The relative date must be a valid PHP relative date/time format.'),
       '#required' => FALSE,
     ];
     $form['localist_date'] = [

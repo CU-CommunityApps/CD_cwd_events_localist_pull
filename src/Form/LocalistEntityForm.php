@@ -69,11 +69,11 @@ class LocalistEntityForm extends EntityForm {
 
     $form['localist_departments'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Department ids'),
+      '#title' => $this->t('Department IDs'),
       '#default_value' => $localist_pull->localist_departments,
       '#size' => 20,
       '#maxlength' => 255,
-      '#description' => $this->t('Enter the department ids you wish to use to pull back events from the Cornell Calendar. Separate department ids with commas.'),
+      '#description' => $this->t('Enter the department IDs you wish to use to pull back events from the Cornell Calendar. Separate department IDs with commas.'),
       '#required' => FALSE,
     ];
     $form['localist_keywords'] = [

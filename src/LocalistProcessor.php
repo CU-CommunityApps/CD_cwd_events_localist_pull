@@ -175,7 +175,7 @@ class LocalistProcessor {
     $query_string = "select taxonomy_term_field_data.tid";
     $query_string .= " from taxonomy_term_field_data, taxonomy_term__".$tax_search_field;
     $query_string .= " where taxonomy_term_field_data.tid = taxonomy_term__".$tax_search_field.".entity_id";
-    $query_string .= " and taxonomy_term__".$tax_search_field.".field_localist_dept_name_value = '".$department_name."'";
+    $query_string .= " and taxonomy_term__".$tax_search_field.".".$tax_search_field."_value = '".$department_name."'";
     $query_string .=" limit 1;";
     $database = \Drupal::database();
     $query = $database->query($query_string);

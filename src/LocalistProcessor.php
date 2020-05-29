@@ -154,6 +154,8 @@ class LocalistProcessor {
       } else {
         $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $department_name,'vid' => $tax_vid]);
       }
+    } else {
+      $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $department_name,'vid' => $tax_vid]);
     }
 
     if(empty($term) || is_null($term)) {

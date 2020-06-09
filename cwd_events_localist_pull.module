@@ -30,10 +30,11 @@ function cwd_events_localist_pull_help($route_name, RouteMatchInterface $route_m
 function cwd_events_localist_pull_cron() {
     $query = \Drupal::service('entity.query')->get('localist_pull');
     $entity_ids = $query->execute();
-    $config_storage = \Drupal::entityManager()->getStorage('localist_pull');
+    $config_storage = \Drupal::entityTypeManager()->getStorage('localist_pull');
     $configs = $config_storage->loadMultiple($entity_ids);
+    $file_system = \Drupal::service('file_system');
     foreach ($configs as $config) {
-      $processor = new LocalistProcessor($config);
+      $processor = new LocalistProcessor($config, $file_system);
       $url = $processor->create_localist_url();
       \Drupal::logger('localist_pull')->notice($url);
       $processor->process_url_pull($config->get('localist_id_field_name'),$url);

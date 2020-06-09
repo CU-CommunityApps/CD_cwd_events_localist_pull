@@ -299,12 +299,12 @@ class LocalistEntityForm extends EntityForm {
     $status = $localist_pull->save();
     // kint($status);
     if ($status) {
-      drupal_set_message($this->t('Saved the %label localist_pull entity.', [
+      \Drupal::messenger()->addMessage($this->t('Saved the %label localist_pull entity.', [
         '%label' => $localist_pull->label(),
       ]));
     }
     else {
-      drupal_set_message($this->t('The %label localist_pull entity was not saved.', [
+      \Drupal::messenger()->addMessage($this->t('The %label localist_pull entity was not saved.', [
         '%label' => $localist_pull->label(),
       ]));
     }

@@ -1,4 +1,4 @@
-# Localist Events Pull
+# CWD Localist Events Importer
 
 A Drupal 8 custom module to import events from localist (CU Calendar, Weill Calendar, etc.) into nodes of a specified content type.
 

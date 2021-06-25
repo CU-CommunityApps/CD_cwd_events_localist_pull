@@ -1,6 +1,6 @@
 {
     "name": "cubear/cwd_events_localist_pull",
-    "description": "A Drupal 8 custom module to import events from localist (CU Calendar, Weill Calendar, etc.) into nodes of a specified content type.",
+    "description": "A Drupal 8 or 9 custom module to import events from localist (CU Calendar, Weill Calendar, etc.) into nodes of a specified content type.",
     "type": "drupal-custom-module",
     "license": "GPL-3.0+",
     "homepage": "https://it.cornell.edu/custom-web",

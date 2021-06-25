@@ -1,5 +1,6 @@
 <?php
 namespace Drupal\cwd_events_localist_pull;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Component\Serialization\Json;
 use \Drupal\node\Entity\Node;
@@ -12,8 +13,14 @@ use Drupal\file\Entity\File;
 class LocalistProcessor {
   private $config;
 
-  public function __construct($provided_config) {
+  /**
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  private $file_system;
+
+  public function __construct($provided_config, FileSystemInterface $file_system) {
     $this->config = $provided_config;
+    $this->file_system = $file_system;
   }
 
   private function get_node_by_localist_id($field_search_name, $id) {
@@ -132,8 +139,8 @@ class LocalistProcessor {
     $photo_name = array_pop($temp);
     $data = file_get_contents($url);
     $path = 'public://localist';
-    file_prepare_directory($path, FILE_CREATE_DIRECTORY);
-    $file = file_save_data($data, 'public://localist/'.$photo_name, FILE_EXISTS_REPLACE);
+    $this->file_system->prepareDirectory($path, FileSystemInterface::CREATE_DIRECTORY);
+    $file = file_save_data($data, $path .'/'. $photo_name, FileSystemInterface::EXISTS_REPLACE);
     $photo_array = [
       'target_id' => $file->id(),
       'alt' => '',

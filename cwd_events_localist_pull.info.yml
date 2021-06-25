@@ -1,6 +1,5 @@
 name: "CWD Localist Events Importer"
 type: module
 description: "Custom module to import events from localist (CU Calendar, Weill Calendar, etc.) into nodes of a specified content type."
-core: 8.x
 core_version_requirement: ^8 || ^9
 package: Custom

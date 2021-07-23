@@ -28,7 +28,9 @@ function cwd_events_localist_pull_help($route_name, RouteMatchInterface $route_m
 }
 
 function cwd_events_localist_pull_cron() {
-    $query = \Drupal::service('entity.query')->get('localist_pull');
+    // updating deprecated code
+    // $query = \Drupal::service('entity.query')->get('localist_pull');
+    $query = \Drupal::entityQuery('localist_pull');
     $entity_ids = $query->execute();
     $config_storage = \Drupal::entityTypeManager()->getStorage('localist_pull');
     $configs = $config_storage->loadMultiple($entity_ids);

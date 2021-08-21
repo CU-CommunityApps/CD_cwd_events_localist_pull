@@ -44,6 +44,8 @@ use Drupal\cwd_events_localist_pull\LocalistInterface;
  *     "localist_tag_field_name",
  *     "localist_department_taxonomy",
  *     "localist_department_lookup_field",
+ *     "localist_event_type_taxonomy",
+ *     "localist_event_type_field_name",
  *     "update_events_bool",
  *     "publish_events_bool",
  *     "pull_specified_departments",
@@ -200,5 +202,17 @@ class LocalistConfig extends ConfigEntityBase implements LocalistInterface {
   * @var boolean
   */
   public $extra_parameters;
+  /**
+  * The localist_pull entity url.
+  *
+  * @var boolean
+  */
+  public $localist_event_type_taxonomy;
+  /**
+  * The localist_pull entity url.
+  *
+  * @var boolean
+  */
+  public $localist_event_type_field_name;
 
 }

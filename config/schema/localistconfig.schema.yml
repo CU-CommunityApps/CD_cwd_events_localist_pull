@@ -52,13 +52,19 @@ cwd_events_localist_pull.localist_pull.*:
       label: 'Localist event image'
     localist_tag_field_name:
       type: string
-      label: 'Localist event department tags'
+      label: 'Localist event department field'
     localist_department_taxonomy:
       type: string
       label: 'Department taxonomy'
     localist_department_lookup_field:
       type: string
       label: 'Department lookup field'
+    localist_event_type_field_name:
+      type: string
+      label: 'Event type field'
+    localist_event_type_taxonomy:
+      type: string
+      label: 'Event type taxonomy'
     update_events_bool:
       type: boolean
       label: 'Should we update existing events'

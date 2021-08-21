@@ -242,8 +242,8 @@ class LocalistEntityForm extends EntityForm {
     ];
     $form['department_label'] = array(
       '#type' => 'label',
-      '#title' => $this->t('<br/><hr/><h2>Department Taxonomy</h2><hr/>
-       Instructions:
+      '#title' => $this->t('<br/><hr/><h2>Taxonomy</h2><hr/>
+       Instructions for departments: (TO DO: instructions for event types)
         <ul>
           <li>If you want to feed in localist departments fill in the machine name of the taxonomy that should hold localist departments.</li>
           <li>If you do not plan to edit these localist department names leave the Department Term lookup blank. We will lookup by term name.</li>
@@ -282,9 +282,24 @@ class LocalistEntityForm extends EntityForm {
       '#title' => $this->t('Should we pull only the specified departments as tags? By not checking this box we will pull all departments on an event.'),
       '#default_value' => $localist_pull->pull_specified_departments,
     ];
-
-
-
+    $form['localist_event_type_taxonomy'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Taxonomy for Event type terms'),
+      '#default_value' => $localist_pull->localist_event_type_taxonomy,
+      '#size' => 20,
+      '#maxlength' => 255,
+      '#description' => $this->t('Machine name of the taxonomy to feed localist event types.'),
+      '#required' => FALSE,
+    ];
+    $form['localist_event_type_field_name'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Event CT field for Localist event_types'),
+      '#default_value' => $localist_pull->localist_event_type_field_name,
+      '#size' => 20,
+      '#maxlength' => 255,
+      '#description' => $this->t('Mapping: event type term reference field machine name.'),
+      '#required' => FALSE,
+    ];
 
     // You will need additional form elements for your custom properties.
     return $form;

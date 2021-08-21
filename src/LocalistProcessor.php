@@ -71,6 +71,9 @@ class LocalistProcessor {
     if(!empty($this->config->get('localist_tag_field_name')) && $this->config->get('localist_tag_field_name') != '') {
       $node_create_array[$this->config->get('localist_tag_field_name')] = '';
     }
+    if(!empty($this->config->get('localist_event_type_field_name')) && $this->config->get('localist_event_type_field_name') != '') {
+      $node_create_array[$this->config->get('localist_event_type_field_name')] = '';
+    }
     return $node_create_array;
   }
 
@@ -125,6 +128,15 @@ class LocalistProcessor {
             $new_array[$this->config->get('localist_tag_field_name')] = $department_term_array;
           }
           break;
+        case $this->config->get('localist_event_type_field_name'):
+          if(!empty($event['event']['filters']['event_types']) && $event['event']['filters']['event_types'] != '') {
+            $event_type_term_array = array();
+            foreach ($event['event']['filters']['event_types'] as $event_type_info) {
+              $event_type_term_array[] = ['target_id' => $this->find_or_create_event_type($event_type_info['name'])];
+            }
+            $new_array[$this->config->get('localist_event_type_field_name')] = $event_type_term_array;
+          }
+          break;
       }
     }
     $new_array['title']=$event['event']['title'];
@@ -149,42 +161,60 @@ class LocalistProcessor {
   }
 
 
-  private function find_or_create_department($department_name) {
+  private function find_or_create_department($term_name) {
     $tax_vid = $this->config->get('localist_department_taxonomy');
     $tax_search_field = $this->config->get('localist_department_lookup_field');
 
     $term = null;
     if($tax_search_field != '') {
-      $term_id = $this->getTermByField($tax_search_field,$department_name);
+      $term_id = $this->getTermByField($tax_search_field,$term_name);
       if($term_id != false) {
         return $term_id;
       } else {
-        $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $department_name,'vid' => $tax_vid]);
+        $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $term_name,'vid' => $tax_vid]);
       }
     } else {
-      $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $department_name,'vid' => $tax_vid]);
+      $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $term_name,'vid' => $tax_vid]);
     }
 
     if(empty($term) || is_null($term)) {
       $new_term = Term::create([
         'vid' => $tax_vid,
-        'name' => $department_name,
+        'name' => $term_name,
       ]);
       if($tax_search_field != '') {
-        $new_term->set($tax_search_field,$department_name);
+        $new_term->set($tax_search_field,$term_name);
       }
       $new_term->enforceIsNew();
       $new_term->save();
-      $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $department_name,'vid' => $tax_vid]);
+      $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $term_name,'vid' => $tax_vid]);
     }
     return array_shift($term)->id();
   }
 
-  protected function getTermByField($tax_search_field,$department_name) {
+  private function find_or_create_event_type($term_name) {
+    $tax_vid = $this->config->get('localist_event_type_taxonomy');
+
+    $term = null;
+    $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $term_name,'vid' => $tax_vid]);
+
+    if(empty($term) || is_null($term)) {
+      $new_term = Term::create([
+        'vid' => $tax_vid,
+        'name' => $term_name,
+      ]);
+      $new_term->enforceIsNew();
+      $new_term->save();
+      $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $term_name,'vid' => $tax_vid]);
+    }
+    return array_shift($term)->id();
+  }
+
+  protected function getTermByField($tax_search_field,$term_name) {
     $query_string = "select taxonomy_term_field_data.tid";
     $query_string .= " from taxonomy_term_field_data, taxonomy_term__".$tax_search_field;
     $query_string .= " where taxonomy_term_field_data.tid = taxonomy_term__".$tax_search_field.".entity_id";
-    $query_string .= " and taxonomy_term__".$tax_search_field.".".$tax_search_field."_value = '".$department_name."'";
+    $query_string .= " and taxonomy_term__".$tax_search_field.".".$tax_search_field."_value = '".$term_name."'";
     $query_string .=" limit 1;";
     $database = \Drupal::database();
     $query = $database->query($query_string);

@@ -163,4 +163,42 @@ class LocalistConfig extends ConfigEntityBase implements LocalistInterface {
   * @var boolean
   */
   public $publish_events_bool;
+
+  /**
+  * The localist_pull entity url.
+  *
+  * @var boolean
+  */
+  public $localist_tag_field_name;
+  /**
+  * The localist_pull entity url.
+  *
+  * @var boolean
+  */
+  public $localist_department_taxonomy;
+  /**
+  * The localist_pull entity url.
+  *
+  * @var boolean
+  */
+  public $localist_department_lookup_field;
+  /**
+  * The localist_pull entity url.
+  *
+  * @var boolean
+  */
+  public $pull_specified_departments;
+  /**
+  * The localist_pull entity url.
+  *
+  * @var boolean
+  */
+  public $localist_relative_date;
+  /**
+  * The localist_pull entity url.
+  *
+  * @var boolean
+  */
+  public $extra_parameters;
+
 }

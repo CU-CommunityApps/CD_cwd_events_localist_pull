@@ -96,6 +96,15 @@ class LocalistEntityForm extends EntityForm {
       '#required' => FALSE,
     ];
 
+    $form['localist_page_count'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Page Count'),
+      '#default_value' => $localist_pull->localist_page_count,
+      '#size' => 20,
+      '#maxlength' => 255,
+      '#description' => $this->t('Enter the number events pages you want to process. Max is 3'),
+      '#required' => FALSE,
+    ];
 
     $form['extra_parameters_type'] = array(
       '#type' => 'value',

@@ -71,6 +71,9 @@ class LocalistProcessor {
     if(!empty($this->config->get('localist_tag_field_name')) && $this->config->get('localist_tag_field_name') != '') {
       $node_create_array[$this->config->get('localist_tag_field_name')] = '';
     }
+    if(!empty($this->config->get('localist_event_type_field_name')) && $this->config->get('localist_event_type_field_name') != '') {
+      $node_create_array[$this->config->get('localist_event_type_field_name')] = '';
+    }
     return $node_create_array;
   }
 
@@ -125,6 +128,15 @@ class LocalistProcessor {
             $new_array[$this->config->get('localist_tag_field_name')] = $department_term_array;
           }
           break;
+        case $this->config->get('localist_event_type_field_name'):
+          if(!empty($event['event']['filters']['event_types']) && $event['event']['filters']['event_types'] != '') {
+            $event_type_term_array = array();
+            foreach ($event['event']['filters']['event_types'] as $event_type_info) {
+              $event_type_term_array[] = ['target_id' => $this->find_or_create_event_type($event_type_info['name'])];
+            }
+            $new_array[$this->config->get('localist_event_type_field_name')] = $event_type_term_array;
+          }
+          break;
       }
     }
     $new_array['title']=$event['event']['title'];
@@ -149,42 +161,60 @@ class LocalistProcessor {
   }
 
 
-  private function find_or_create_department($department_name) {
+  private function find_or_create_department($term_name) {
     $tax_vid = $this->config->get('localist_department_taxonomy');
     $tax_search_field = $this->config->get('localist_department_lookup_field');
 
     $term = null;
     if($tax_search_field != '') {
-      $term_id = $this->getTermByField($tax_search_field,$department_name);
+      $term_id = $this->getTermByField($tax_search_field,$term_name);
       if($term_id != false) {
         return $term_id;
       } else {
-        $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $department_name,'vid' => $tax_vid]);
+        $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $term_name,'vid' => $tax_vid]);
       }
     } else {
-      $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $department_name,'vid' => $tax_vid]);
+      $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $term_name,'vid' => $tax_vid]);
     }
 
     if(empty($term) || is_null($term)) {
       $new_term = Term::create([
         'vid' => $tax_vid,
-        'name' => $department_name,
+        'name' => $term_name,
       ]);
       if($tax_search_field != '') {
-        $new_term->set($tax_search_field,$department_name);
+        $new_term->set($tax_search_field,$term_name);
       }
       $new_term->enforceIsNew();
       $new_term->save();
-      $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $department_name,'vid' => $tax_vid]);
+      $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $term_name,'vid' => $tax_vid]);
     }
     return array_shift($term)->id();
   }
 
-  protected function getTermByField($tax_search_field,$department_name) {
+  private function find_or_create_event_type($term_name) {
+    $tax_vid = $this->config->get('localist_event_type_taxonomy');
+
+    $term = null;
+    $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $term_name,'vid' => $tax_vid]);
+
+    if(empty($term) || is_null($term)) {
+      $new_term = Term::create([
+        'vid' => $tax_vid,
+        'name' => $term_name,
+      ]);
+      $new_term->enforceIsNew();
+      $new_term->save();
+      $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $term_name,'vid' => $tax_vid]);
+    }
+    return array_shift($term)->id();
+  }
+
+  protected function getTermByField($tax_search_field,$term_name) {
     $query_string = "select taxonomy_term_field_data.tid";
     $query_string .= " from taxonomy_term_field_data, taxonomy_term__".$tax_search_field;
     $query_string .= " where taxonomy_term_field_data.tid = taxonomy_term__".$tax_search_field.".entity_id";
-    $query_string .= " and taxonomy_term__".$tax_search_field.".".$tax_search_field."_value = '".$department_name."'";
+    $query_string .= " and taxonomy_term__".$tax_search_field.".".$tax_search_field."_value = '".$term_name."'";
     $query_string .=" limit 1;";
     $database = \Drupal::database();
     $query = $database->query($query_string);
@@ -197,7 +227,7 @@ class LocalistProcessor {
     }
   }
 
-  public function create_localist_url(){
+  public function create_localist_url($page = 1){
     $uri = $this->config->get('url');
     $keys = str_replace(' ','+',implode('&keyword[]=',explode(',',$this->config->get('localist_keywords'))));
     if(!is_null($keys) && $keys != '') {
@@ -234,7 +264,7 @@ class LocalistProcessor {
     } else {
       $extra_param = "";
     }
-    $url = $uri.'&days=370&sort=date'.$keys.$depts.'&pp='.$count.'&start='.$date.$extra_param;
+    $url = $uri.'&days=370&sort=date'.$keys.$depts.'&pp='.$count.'&start='.$date.$extra_param."&page=$page";
     return $url;
   }
 
@@ -247,6 +277,12 @@ class LocalistProcessor {
         return FALSE;
       } else {
         $events = Json::decode($json)['events'];
+        $current_page = Json::decode($json)['page']['current'];
+        $total_pages = Json::decode($json)['page']['total'];
+        if(!$this->should_process_current_page($json,$current_page,$total_pages)) {
+          return;
+        }
+        \Drupal::logger('localist_pull')->notice("process $current_page of $total_pages");
         if(!empty($events)) {
           $count = 0;
           foreach ($events as $event) {
@@ -275,11 +311,32 @@ class LocalistProcessor {
             }
           }
         }
+
+        //recursive call until we hit localist_page_count limit if configured, max of 3 pages
+        $next_page_url = $this->create_localist_url($current_page + 1);
+        $this->process_url_pull($search_field_name,$next_page_url);
       }
     }
     catch (RequestException $e) {
       \Drupal::logger('localist_pull')->notice("exception");
       return FALSE;
     }
+  }
+
+  private function should_process_current_page($json,$current_page,$total_pages) {
+    $pages_to_process = 1;
+    $have_page_count = is_numeric($this->config->get('localist_page_count'));
+    if($have_page_count) {
+      $pages_to_process = min(($this->config->get('localist_page_count')),3);
+    }
+
+    if($current_page > $pages_to_process) {
+      return false;
+    }
+
+    if($current_page > $total_pages) {
+      return false;
+    }
+    return true;
   }
 }

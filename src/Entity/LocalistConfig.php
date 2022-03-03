@@ -31,6 +31,7 @@ use Drupal\cwd_events_localist_pull\LocalistInterface;
  *     "localist_departments",
  *     "localist_keywords",
  *     "localist_count",
+ *     "localist_page_count",
  *     "localist_date",
  *     "localist_relative_date",
  *     "event_machine_name",
@@ -44,6 +45,8 @@ use Drupal\cwd_events_localist_pull\LocalistInterface;
  *     "localist_tag_field_name",
  *     "localist_department_taxonomy",
  *     "localist_department_lookup_field",
+ *     "localist_event_type_taxonomy",
+ *     "localist_event_type_field_name",
  *     "update_events_bool",
  *     "publish_events_bool",
  *     "pull_specified_departments",
@@ -96,6 +99,12 @@ class LocalistConfig extends ConfigEntityBase implements LocalistInterface {
   * @var string
   */
   public $localist_count;
+  /**
+  * The localist_pull entity url.
+  *
+  * @var string
+  */
+  public $localist_page_count;
   /**
   * The localist_pull entity url.
   *
@@ -163,4 +172,54 @@ class LocalistConfig extends ConfigEntityBase implements LocalistInterface {
   * @var boolean
   */
   public $publish_events_bool;
+
+  /**
+  * The localist_pull entity url.
+  *
+  * @var boolean
+  */
+  public $localist_tag_field_name;
+  /**
+  * The localist_pull entity url.
+  *
+  * @var boolean
+  */
+  public $localist_department_taxonomy;
+  /**
+  * The localist_pull entity url.
+  *
+  * @var boolean
+  */
+  public $localist_department_lookup_field;
+  /**
+  * The localist_pull entity url.
+  *
+  * @var boolean
+  */
+  public $pull_specified_departments;
+  /**
+  * The localist_pull entity url.
+  *
+  * @var boolean
+  */
+  public $localist_relative_date;
+  /**
+  * The localist_pull entity url.
+  *
+  * @var boolean
+  */
+  public $extra_parameters;
+  /**
+  * The localist_pull entity url.
+  *
+  * @var boolean
+  */
+  public $localist_event_type_taxonomy;
+  /**
+  * The localist_pull entity url.
+  *
+  * @var boolean
+  */
+  public $localist_event_type_field_name;
+
 }

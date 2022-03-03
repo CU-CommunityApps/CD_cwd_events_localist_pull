@@ -20,6 +20,9 @@ cwd_events_localist_pull.localist_pull.*:
     localist_count:
       type: string
       label: 'Event count'
+    localist_page_count:
+      type: string
+      label: Page count"
     localist_date:
       type: string
       label: 'Date'

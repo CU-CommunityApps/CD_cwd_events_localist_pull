@@ -31,6 +31,7 @@ use Drupal\cwd_events_localist_pull\LocalistInterface;
  *     "localist_departments",
  *     "localist_keywords",
  *     "localist_count",
+ *     "localist_page_count",
  *     "localist_date",
  *     "localist_relative_date",
  *     "event_machine_name",
@@ -98,6 +99,12 @@ class LocalistConfig extends ConfigEntityBase implements LocalistInterface {
   * @var string
   */
   public $localist_count;
+  /**
+  * The localist_pull entity url.
+  *
+  * @var string
+  */
+  public $localist_page_count;
   /**
   * The localist_pull entity url.
   *

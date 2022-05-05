@@ -38,7 +38,6 @@ function cwd_events_localist_pull_cron() {
     foreach ($configs as $config) {
       $processor = new LocalistProcessor($config, $file_system);
       $url = $processor->create_localist_url();
-      \Drupal::logger('localist_pull')->notice($url);
       $processor->process_url_pull($config->get('localist_id_field_name'),$url);
     }
 

@@ -148,6 +148,7 @@ class LocalistProcessor {
 
   private function create_file_and_array($url) {
     $temp = explode('/',$url);
+    $url = str_replace("https:","http:",$url);
     $photo_name = array_pop($temp);
     $data = file_get_contents($url);
     $path = 'public://localist';

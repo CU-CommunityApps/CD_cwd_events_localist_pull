@@ -148,6 +148,7 @@ class LocalistProcessor {
 
   private function create_file_and_array($url) {
     $temp = explode('/',$url);
+    $url = str_replace("https:","http:",$url);
     $photo_name = array_pop($temp);
     $data = file_get_contents($url);
     $path = 'public://localist';
@@ -271,6 +272,7 @@ class LocalistProcessor {
 
   public function process_url_pull($search_field_name,$url) {
     try {
+      \Drupal::logger('localist_pull')->notice($url);
       $response = \Drupal::httpClient()->get($url, array('headers' => array('Accept' => 'text/plain')));
       $json = (string) $response->getBody();
       if (empty($json)) {
@@ -279,12 +281,12 @@ class LocalistProcessor {
         $events = Json::decode($json)['events'];
         $current_page = Json::decode($json)['page']['current'];
         $total_pages = Json::decode($json)['page']['total'];
-        if(!$this->should_process_current_page($json,$current_page,$total_pages)) {
+        if(empty($events) || !$this->should_process_current_page($json,$current_page,$total_pages)) {
+          \Drupal::logger('localist_pull')->notice("should not process page $current_page of $total_pages");
           return;
         }
-        \Drupal::logger('localist_pull')->notice("process $current_page of $total_pages");
+        \Drupal::logger('localist_pull')->notice("process page $current_page of $total_pages");
         if(!empty($events)) {
-          $count = 0;
           foreach ($events as $event) {
             $localist_data_array = $this->get_localist_event_data($event,$this->create_node_create_array());
             $existing_event = $this->get_node_by_localist_id($search_field_name,$event['event']['id']);

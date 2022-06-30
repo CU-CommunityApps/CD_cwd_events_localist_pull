@@ -291,7 +291,6 @@ class LocalistProcessor {
         }
         \Drupal::logger('localist_pull')->notice("process page $current_page of $total_pages");
         if(!empty($events)) {
-          $count = 0;
           foreach ($events as $event) {
             $localist_data_array = $this->get_localist_event_data($event,$this->create_node_create_array());
             $existing_event = $this->get_node_by_localist_id($search_field_name,$event['event']['id']);

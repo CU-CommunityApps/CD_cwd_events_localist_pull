@@ -1,12 +1,13 @@
 <?php
+
 namespace Drupal\cwd_events_localist_pull;
+
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Component\Serialization\Json;
 use \Drupal\node\Entity\Node;
 use Drupal\taxonomy\Entity\Term;
+use GuzzleHttp\Exception\RequestException;
 
-use Drupal\file\Entity\File;
 /**
  * Provides an interface defining an localist_pull entity entity.
  */
@@ -24,10 +25,13 @@ class LocalistProcessor {
   }
 
   private function get_node_by_localist_id($field_search_name, $id) {
-    $conf_id = $this->config->id;
-    $query = \Drupal::entityQuery('node')->condition($field_search_name, $conf_id.$id);
-    $nids = $query->execute();
-    return $nids;
+    $event_id = $this->config->id . $id;
+    $database = \Drupal::database();
+    $query = $database->select('node', 'n');
+    $query->innerJoin("node__{$field_search_name}", 'lid', 'lid.entity_id=n.nid');
+    $query->addField('n', 'nid');
+    $query->condition("lid.{$field_search_name}_value", $event_id);
+    return $query->execute()->fetchCol();
   }
 
   private function convert_localist_date($date_string) {
@@ -300,9 +304,8 @@ class LocalistProcessor {
               $node->save();
             } else {
               if($this->config->update_events_bool) {
-                $temp = array_reverse($existing_event);
-                $existing_node_id = array_pop($temp);
-                $node = Node::load($existing_node_id);
+                $nid = reset($existing_event);
+                $node = Node::load($nid);
                 foreach ($localist_data_array as $key => $value) {
                   if($key != 'type') {
                     $node->set($key,$value);
@@ -320,7 +323,7 @@ class LocalistProcessor {
       }
     }
     catch (RequestException $e) {
-      \Drupal::logger('localist_pull')->notice("exception");
+      \Drupal::logger('localist_pull')->error($e->getMessage());
       return FALSE;
     }
   }

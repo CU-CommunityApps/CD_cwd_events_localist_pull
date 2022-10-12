@@ -240,13 +240,13 @@ class LocalistEntityForm extends EntityForm {
       '#required' => FALSE,
     ];
 
-    $form['localist_image_field_name'] = [
+    $form['localist_media_field_name'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Localist event image field'),
-      '#default_value' => $localist_pull->localist_image_field_name,
+      '#title' => $this->t('Localist event media field'),
+      '#default_value' => $localist_pull->localist_media_field_name,
       '#size' => 20,
       '#maxlength' => 255,
-      '#description' => $this->t('Mapping: field machine name for the localist image'),
+      '#description' => $this->t('Mapping: field machine name for the localist media'),
       '#required' => FALSE,
     ];
     $form['department_label'] = array(

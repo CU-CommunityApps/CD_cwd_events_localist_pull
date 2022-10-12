@@ -42,6 +42,7 @@ use Drupal\cwd_events_localist_pull\LocalistInterface;
  *     "localist_end_date_field_name",
  *     "localist_description_field_name",
  *     "localist_image_field_name",
+ *     "localist_media_field_name",
  *     "localist_tag_field_name",
  *     "localist_department_taxonomy",
  *     "localist_department_lookup_field",
@@ -159,6 +160,11 @@ class LocalistConfig extends ConfigEntityBase implements LocalistInterface {
   * @var string
   */
   public $localist_image_field_name;
+
+  /**  *
+  * @var string
+  */
+  public $localist_media_field_name;
 
   /**
   * The localist_pull entity url.

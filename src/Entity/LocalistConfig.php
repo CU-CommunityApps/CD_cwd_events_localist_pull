@@ -161,7 +161,9 @@ class LocalistConfig extends ConfigEntityBase implements LocalistInterface {
   */
   public $localist_image_field_name;
 
-  /**  *
+  /**
+  *
+  * the localist_pull media field name.
   * @var string
   */
   public $localist_media_field_name;

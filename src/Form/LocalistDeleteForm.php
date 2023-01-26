@@ -6,7 +6,7 @@ use Drupal\Core\Url;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Builds the form to delete an localist_pull entity.
+ * Builds the form to delete a localist_pull entity.
  */
 
 class LocalistDeleteForm extends EntityConfirmFormBase {

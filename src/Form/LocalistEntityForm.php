@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class LocalistEntityForm extends EntityForm {
 
   /**
-   * Constructs an localist_pull entityForm object.
+   * Constructs a localist_pull entityForm object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entityTypeManager.
@@ -342,7 +342,7 @@ class LocalistEntityForm extends EntityForm {
   }
 
   /**
-   * Helper function to check whether an localist_pull entity configuration entity exists.
+   * Helper function to check whether a localist_pull entity configuration entity exists.
    */
   public function exist($id) {
     $entity = $this->entityTypeManager->getStorage('localist_pull')->getQuery()

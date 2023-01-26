@@ -9,7 +9,7 @@ use Drupal\taxonomy\Entity\Term;
 use GuzzleHttp\Exception\RequestException;
 
 /**
- * Provides an interface defining an localist_pull entity entity.
+ * Provides an interface defining a localist_pull entity.
  */
 class LocalistProcessor {
   private $config;

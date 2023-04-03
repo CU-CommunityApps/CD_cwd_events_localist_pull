@@ -109,8 +109,8 @@ class LocalistEntityForm extends EntityForm {
     $form['extra_parameters_type'] = array(
       '#type' => 'value',
       '#value' => array('none' => t('None'),
-      'distinct' => t('Distinct'),
-      'all' => t('All Instances'))
+        'distinct' => t('Distinct'),
+        'all' => t('All Instances'))
     );
     $form['extra_parameters'] = array(
       '#title' => t('Extra Localist URL Parameter'),
@@ -152,12 +152,12 @@ class LocalistEntityForm extends EntityForm {
       '#type' => 'label',
       '#title' => $this->t('<br/><hr/><h2>How events are imported:</h2><hr/>'),
     );
-    $form['update_events_bool'] =[
+    $form['update_events_bool'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Update all existing events'),
       '#default_value' => $localist_pull->update_events_bool,
     ];
-    $form['publish_events_bool'] =[
+    $form['publish_events_bool'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Publish all new events'),
       '#default_value' => $localist_pull->publish_events_bool,
@@ -240,13 +240,13 @@ class LocalistEntityForm extends EntityForm {
       '#required' => FALSE,
     ];
 
-    $form['localist_image_field_name'] = [
+    $form['localist_media_field_name'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Localist event image field'),
-      '#default_value' => $localist_pull->localist_image_field_name,
+      '#title' => $this->t('Localist event media field'),
+      '#default_value' => $localist_pull->localist_media_field_name,
       '#size' => 20,
       '#maxlength' => 255,
-      '#description' => $this->t('Mapping: field machine name for the localist image'),
+      '#description' => $this->t('Mapping: field machine name for the localist media'),
       '#required' => FALSE,
     ];
     $form['department_label'] = array(
@@ -286,7 +286,7 @@ class LocalistEntityForm extends EntityForm {
       '#description' => $this->t('Machine name of the taxonomy field to search for tax term in Drupal taxonomy that maps to localist department'),
       '#required' => FALSE,
     ];
-    $form['pull_specified_departments'] =[
+    $form['pull_specified_departments'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Should we pull only the specified departments as tags? By not checking this box we will pull all departments on an event.'),
       '#default_value' => $localist_pull->pull_specified_departments,

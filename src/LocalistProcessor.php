@@ -179,6 +179,16 @@ class LocalistProcessor {
     return $media->id();
   }
 
+  private function find_media_for_file($image_array) {
+    $file = \Drupal::entityTypeManager()->getStorage('file')->load($image_array['target_id']);
+    $result = \Drupal::service('file.usage')->listUsage($file);
+    if (array_key_exists('media', $result['file'])) {
+      return array_key_first($result['file']['media']);
+    }
+    else {
+      return null;
+    }
+  }
   private function create_file_and_array($url) {
     $temp = explode('/', $url);
     $url = str_replace("https:", "http:", $url);

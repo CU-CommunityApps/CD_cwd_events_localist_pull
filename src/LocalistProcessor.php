@@ -5,6 +5,7 @@ namespace Drupal\cwd_events_localist_pull;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Component\Serialization\Json;
 use \Drupal\node\Entity\Node;
+use \Drupal\media\Entity\Media;
 use Drupal\taxonomy\Entity\Term;
 use GuzzleHttp\Exception\RequestException;
 
@@ -182,7 +183,7 @@ class LocalistProcessor {
   private function find_media_for_file($image_array) {
     $file = \Drupal::entityTypeManager()->getStorage('file')->load($image_array['target_id']);
     $result = \Drupal::service('file.usage')->listUsage($file);
-    if (array_key_exists('media', $result['file'])) {
+    if ($result && array_key_exists('media', $result['file'])) {
       return array_key_first($result['file']['media']);
     }
     else {

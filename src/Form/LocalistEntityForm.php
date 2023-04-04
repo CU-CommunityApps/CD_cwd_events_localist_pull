@@ -102,7 +102,7 @@ class LocalistEntityForm extends EntityForm {
       '#default_value' => $localist_pull->localist_page_count,
       '#size' => 20,
       '#maxlength' => 255,
-      '#description' => $this->t('Enter the number events pages you want to process. Max is 3'),
+      '#description' => $this->t('Enter the number of pages of events you want to process. Max is 3.'),
       '#required' => FALSE,
     ];
 
@@ -124,7 +124,7 @@ class LocalistEntityForm extends EntityForm {
       '#type' => 'label',
       '#title' => $this->t('<br/>Date instructions:
         <ul>
-          <li>Relative date  will be used if filled in</li>
+          <li>Relative date will be used if filled in</li>
           <li>If relative date is blank this connection will use the static date</li>
           <li>If there is no static date the default is today</li>
         </ul>'),
@@ -173,7 +173,7 @@ class LocalistEntityForm extends EntityForm {
       '#default_value' => $localist_pull->event_machine_name,
       '#size' => 20,
       '#maxlength' => 255,
-      '#description' => $this->t('Machine name of the content type that localist will feed into'),
+      '#description' => $this->t('Machine name of the content type that localist will feed into.'),
       '#required' => FALSE,
     ];
     $form['localist_id_field_name'] = [
@@ -182,7 +182,7 @@ class LocalistEntityForm extends EntityForm {
       '#default_value' => $localist_pull->localist_id_field_name,
       '#size' => 20,
       '#maxlength' => 255,
-      '#description' => $this->t('Mapping: field machine name for the localist event id'),
+      '#description' => $this->t('Mapping: field machine name for the localist event id.'),
       '#required' => FALSE,
     ];
     $form['localist_url_field_name'] = [
@@ -191,7 +191,7 @@ class LocalistEntityForm extends EntityForm {
       '#default_value' => $localist_pull->localist_url_field_name,
       '#size' => 20,
       '#maxlength' => 255,
-      '#description' => $this->t('Mapping: field machine name for the localist event URL'),
+      '#description' => $this->t('Mapping: field machine name for the localist event URL.'),
       '#required' => FALSE,
     ];
     $form['localist_location_field_name'] = [
@@ -200,7 +200,7 @@ class LocalistEntityForm extends EntityForm {
       '#default_value' => $localist_pull->localist_location_field_name,
       '#size' => 20,
       '#maxlength' => 255,
-      '#description' => $this->t('Mapping: field machine name for the localist event location'),
+      '#description' => $this->t('Mapping: field machine name for the localist event location.'),
       '#required' => FALSE,
     ];
     $form['localist_date_field_name'] = [
@@ -209,7 +209,7 @@ class LocalistEntityForm extends EntityForm {
       '#default_value' => $localist_pull->localist_date_field_name,
       '#size' => 20,
       '#maxlength' => 255,
-      '#description' => $this->t('Mapping: field machine name for the localist event date and time'),
+      '#description' => $this->t('Mapping: field machine name for the localist event date and time.'),
       '#required' => FALSE,
     ];
     $form['localist_end_date_field_name'] = [
@@ -218,7 +218,7 @@ class LocalistEntityForm extends EntityForm {
       '#default_value' => $localist_pull->localist_end_date_field_name,
       '#size' => 20,
       '#maxlength' => 255,
-      '#description' => $this->t('Mapping: field machine name for the localist event end date and time'),
+      '#description' => $this->t('Mapping: field machine name for the localist event end date and time.'),
       '#required' => FALSE,
     ];
     $form['localist_description_field_name'] = [
@@ -227,7 +227,7 @@ class LocalistEntityForm extends EntityForm {
       '#default_value' => $localist_pull->localist_description_field_name,
       '#size' => 20,
       '#maxlength' => 255,
-      '#description' => $this->t('Mapping: field machine name for the localist event discription'),
+      '#description' => $this->t('Mapping: field machine name for the localist event discription.'),
       '#required' => FALSE,
     ];
     $form['localist_image_field_name'] = [
@@ -236,7 +236,7 @@ class LocalistEntityForm extends EntityForm {
       '#default_value' => $localist_pull->localist_image_field_name,
       '#size' => 20,
       '#maxlength' => 255,
-      '#description' => $this->t('Mapping: field machine name for the localist image'),
+      '#description' => $this->t('Mapping: field machine name for the localist image.'),
       '#required' => FALSE,
     ];
 
@@ -246,7 +246,7 @@ class LocalistEntityForm extends EntityForm {
       '#default_value' => $localist_pull->localist_media_field_name,
       '#size' => 20,
       '#maxlength' => 255,
-      '#description' => $this->t('Mapping: field machine name for the localist media. Importer expects the media field to reference a media bundle called "image" with an image file field called "field_media_image"'),
+      '#description' => $this->t('Mapping: field machine name for the localist media. Importer expects the media field to reference a media bundle called "image" with an image file field called "field_media_image".'),
       '#required' => FALSE,
     ];
     $form['department_label'] = array(
@@ -265,7 +265,7 @@ class LocalistEntityForm extends EntityForm {
       '#default_value' => $localist_pull->localist_department_taxonomy,
       '#size' => 20,
       '#maxlength' => 255,
-      '#description' => $this->t('Machine name of the taxonomy to feed localist departments'),
+      '#description' => $this->t('Machine name of the taxonomy to feed localist departments.'),
       '#required' => FALSE,
     ];
     $form['localist_tag_field_name'] = [
@@ -283,7 +283,7 @@ class LocalistEntityForm extends EntityForm {
       '#default_value' => $localist_pull->localist_department_lookup_field,
       '#size' => 20,
       '#maxlength' => 255,
-      '#description' => $this->t('Machine name of the taxonomy field to search for tax term in Drupal taxonomy that maps to localist department'),
+      '#description' => $this->t('Machine name of the taxonomy field to search for tax term in Drupal taxonomy that maps to localist department.'),
       '#required' => FALSE,
     ];
     $form['pull_specified_departments'] = [

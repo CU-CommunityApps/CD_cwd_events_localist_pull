@@ -246,7 +246,7 @@ class LocalistEntityForm extends EntityForm {
       '#default_value' => $localist_pull->localist_media_field_name,
       '#size' => 20,
       '#maxlength' => 255,
-      '#description' => $this->t('Mapping: field machine name for the localist media'),
+      '#description' => $this->t('Mapping: field machine name for the localist media. Importer expects the media field to reference a media bundle called "image" with an image file field called "field_media_image"'),
       '#required' => FALSE,
     ];
     $form['department_label'] = array(

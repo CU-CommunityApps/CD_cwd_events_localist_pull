@@ -374,7 +374,7 @@ class LocalistProcessor {
       }
     }
     catch (RequestException $e) {
-      \Drupal::logger('localist_pull')->notice("exception");
+      \Drupal::logger('localist_pull')->notice($e->getMessage());
       return FALSE;
     }
   }

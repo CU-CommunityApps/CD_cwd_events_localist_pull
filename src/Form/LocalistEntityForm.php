@@ -347,6 +347,7 @@ class LocalistEntityForm extends EntityForm {
   public function exist($id) {
     $entity = $this->entityTypeManager->getStorage('localist_pull')->getQuery()
       ->condition('id', $id)
+      ->accessCheck(TRUE)
       ->execute();
     return (bool) $entity;
   }

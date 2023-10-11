@@ -197,7 +197,7 @@ class LocalistProcessor {
     $data = file_get_contents($url);
     $path = 'public://localist';
     $this->file_system->prepareDirectory($path, FileSystemInterface::CREATE_DIRECTORY);
-    $file = file_save_data($data, $path . '/' . $photo_name, FileSystemInterface::EXISTS_REPLACE);
+    $file = \Drupal::service('file.repository')->writeData($data, $path .'/'. $photo_name, FileSystemInterface::EXISTS_REPLACE);
     $photo_array = [
       'target_id' => $file->id(),
       'alt' => '',

@@ -174,7 +174,7 @@ class LocalistEntityForm extends EntityForm {
       '#size' => 20,
       '#maxlength' => 255,
       '#description' => $this->t('Machine name of the content type that localist will feed into'),
-      '#required' => FALSE,
+      '#required' => TRUE,
     ];
     $form['localist_id_field_name'] = [
       '#type' => 'textfield',
@@ -183,7 +183,7 @@ class LocalistEntityForm extends EntityForm {
       '#size' => 20,
       '#maxlength' => 255,
       '#description' => $this->t('Mapping: field machine name for the localist event id'),
-      '#required' => FALSE,
+      '#required' => TRUE,
     ];
     $form['localist_url_field_name'] = [
       '#type' => 'textfield',

@@ -53,6 +53,9 @@ cwd_events_localist_pull.localist_pull.*:
     localist_image_field_name:
       type: string
       label: 'Localist event image'
+    localist_media_field_name:
+      type: string
+      label: 'Localist event media'
     localist_tag_field_name:
       type: string
       label: 'Localist event department field'

@@ -315,6 +315,37 @@ class LocalistEntityForm extends EntityForm {
       '#required' => FALSE,
     ];
 
+    $form['tags_label'] = array(
+      '#type' => 'label',
+      '#title' => $this->t('<h3>Localist Tags</h3>
+       A way to pull in tags from localist to a taxonomy field in Drupal.'),
+    );
+    $form['localist_tags_taxonomy'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Taxonomy for tags from localist'),
+      '#default_value' => $localist_pull->localist_tags_taxonomy,
+      '#size' => 20,
+      '#maxlength' => 255,
+      '#description' => $this->t('Machine name of the taxonomy to feed localist tags.'),
+      '#required' => FALSE,
+    ];
+    $form['localist_tags_field_name'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Event CT field for Localist tags'),
+      '#default_value' => $localist_pull->localist_tags_field_name,
+      '#size' => 20,
+      '#maxlength' => 255,
+      '#description' => $this->t('Mapping: tags term reference field machine name.'),
+      '#required' => FALSE,
+    ];
+
+    $form['localist_tags_use_existing'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Only use existing tags from Drupal for localist tags.'),
+      '#default_value' => $localist_pull->localist_tags_use_existing,
+    ];
+
+
     // You will need additional form elements for your custom properties.
     return $form;
   }

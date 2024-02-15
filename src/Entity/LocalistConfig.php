@@ -52,6 +52,9 @@ use Drupal\cwd_events_localist_pull\LocalistInterface;
  *     "publish_events_bool",
  *     "pull_specified_departments",
  *     "extra_parameters",
+ *     "localist_tags_taxonomy",
+ *     "localist_tags_field_name",
+ *     "localist_tags_use_existing",
  *   },
  *   links = {
  *     "edit-form" = "/admin/config/system/localist_pull/{localist_pull}",
@@ -229,5 +232,26 @@ class LocalistConfig extends ConfigEntityBase implements LocalistInterface {
    * @var boolean
    */
   public $localist_event_type_field_name;
+
+  /**
+  * The localist_tags_field_name.
+  *
+  * @var string
+  */
+  public $localist_tags_field_name;
+
+  /**
+   * The localist_tags_taxonomy.
+   *
+   * @var string
+   */
+  public $localist_tags_taxonomy;
+
+  /**
+   * The localist_tags_use_existing.
+   *
+   * @var boolean
+   */
+  public $localist_tags_use_existing;
 
 }

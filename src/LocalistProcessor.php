@@ -86,6 +86,9 @@ class LocalistProcessor {
     if (!empty($this->config->get('localist_event_type_field_name')) && $this->config->get('localist_event_type_field_name') != '') {
       $node_create_array[$this->config->get('localist_event_type_field_name')] = '';
     }
+    if (!empty($this->config->get('localist_tags_field_name')) && $this->config->get('localist_tags_field_name') != '') {
+      $node_create_array[$this->config->get('localist_tags_field_name')] = '';
+    }
     return $node_create_array;
   }
 
@@ -154,6 +157,19 @@ class LocalistProcessor {
               $event_type_term_array[] = ['target_id' => $this->find_or_create_event_type($event_type_info['name'])];
             }
             $new_array[$this->config->get('localist_event_type_field_name')] = $event_type_term_array;
+          }
+          break;
+
+        case $this->config->get('localist_tags_field_name'):
+          if (!empty($event['event']['tags']) && $event['event']['tags'] != '') {
+            $event_type_term_array = array();
+            foreach ($event['event']['tags'] as $localist_tag) {
+              $target_id = $this->find_or_create_localist_tag($localist_tag);
+              if($target_id) {
+                $event_type_term_array[] = ['target_id' => $target_id];
+              }
+            }
+            $new_array[$this->config->get('localist_tags_field_name')] = $event_type_term_array;
           }
           break;
       }
@@ -246,6 +262,28 @@ class LocalistProcessor {
     $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $term_name, 'vid' => $tax_vid]);
 
     if (empty($term) || is_null($term)) {
+      $new_term = Term::create([
+        'vid' => $tax_vid,
+        'name' => $term_name,
+      ]);
+      $new_term->enforceIsNew();
+      $new_term->save();
+      $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $term_name, 'vid' => $tax_vid]);
+    }
+    return array_shift($term)->id();
+  }
+
+  private function find_or_create_localist_tag($term_name) {
+    $tax_vid = $this->config->get('localist_tags_taxonomy');
+    $use_existing_only = $this->config->get('localist_tags_use_existing');
+
+    $term = null;
+    $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadByProperties(['name' => $term_name, 'vid' => $tax_vid]);
+
+    if (empty($term) || is_null($term)) {
+      if($use_existing_only) {
+        return null;
+      }
       $new_term = Term::create([
         'vid' => $tax_vid,
         'name' => $term_name,
